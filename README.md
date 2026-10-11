@@ -1,147 +1,97 @@
 # Code Heat
 
-See the size of your code in the VS Code Explorer.
-Files and folders change from bright green to dark red as their line counts grow.
-Use the CLI to export counts or browse a local HTML report.
+See where your code is largest. Color files and folders in VS Code, or explore a local HTML size report.
 
-## Install in one command
+[Quick start](#quick-start) · [Simple guide](#simple-guide) · [CLI](#export-your-own-report) · [Troubleshooting](#nothing-appears-in-vs-code)
 
-Install **VS Code 1.90 or newer** first. Its `code` command must be available in your terminal.
-The extension installer needs no Git clone, Node.js installation, or build step.
+## Examples
 
-**macOS / Linux** — paste this command into a terminal:
+**Browse the biggest folders and files.** This is the local HTML report for Next.js:
 
-```sh
-curl -fsSL https://raw.githubusercontent.com/orYoffe/code-heat/main/scripts/install.sh | sh
-```
+![Next.js folder size report](https://raw.githubusercontent.com/orYoffe/code-heat/main/screenshots/report-server.png)
 
-**Windows** — paste this command into PowerShell:
+[Download and open the example HTML](https://github.com/orYoffe/code-heat/raw/main/examples/nextjs-size-report.html) · [JSON](examples/nextjs-sizes.json) · [CSV](examples/nextjs-sizes.csv)
+
+**Explorer colors:** small files are green; large files and folders are red.
+This image is an **illustration using real counts, not a live VS Code screenshot**.
+Native Explorer decorations color names and badges. The illustration also shows counts inline.
+
+![Explorer color illustration](https://raw.githubusercontent.com/orYoffe/code-heat/main/screenshots/explorer-color-preview.png)
+
+| Next.js example | Physical lines | Default color |
+| --- | ---: | --- |
+| `crypto-utils.ts` | 77 | Bright green |
+| `next-server.ts` | 1,588 | Dark red |
+| Server folder | 4,504 | Dark red |
+
+The retained Next.js scan counted **5,374 files and 191,387 lines**.
+See [validation details](examples/validation.json) for measurement and testing limits.
+
+## Quick start
+
+Install **VS Code 1.90 or newer**. Make sure its `code` command is available in your terminal.
+
+**Windows — PowerShell:**
 
 ```powershell
 irm https://raw.githubusercontent.com/orYoffe/code-heat/main/scripts/install.ps1 | iex
 ```
 
-The installer downloads version **0.1.1**, checks its SHA-256 checksum, and installs the VSIX through VS Code.
-It removes its temporary download on success or failure.
-Inspect the [shell installer](scripts/install.sh) or [PowerShell installer](scripts/install.ps1) before running it.
-
-On macOS, enable `code` through the Command Palette: **Shell Command: Install 'code' command in PATH**.
-Open a new terminal after changing PATH.
-See [VS Code's command-line guide](https://code.visualstudio.com/docs/configure/command-line) for platform setup.
-
-Prefer a manual install? [Download the VSIX](https://github.com/orYoffe/code-heat/raw/main/releases/explorer-size-heatmap-0.1.1.vsix).
-Then choose **Extensions → … → Install from VSIX**.
-For an already downloaded package, run:
+**macOS / Linux — terminal:**
 
 ```sh
-code --install-extension explorer-size-heatmap-0.1.1.vsix
+curl -fsSL https://raw.githubusercontent.com/orYoffe/code-heat/main/scripts/install.sh | sh
 ```
 
-No Marketplace release exists yet. Find **Code Heat** in the Extensions panel.
-Version 0.1.0 was named **Explorer Size Heatmap**. The extension ID stays `oryoffe.explorer-size-heatmap`.
-The current CLI command is `code-size`; the configuration filename is `.explorer-size.json`.
+Then:
 
-## Confirm installation and use it
+1. Open your project with **File → Open Folder**.
+2. Run **Developer: Reload Window** from the Command Palette.
+3. Look for **Code Heat: Indexing**, then **Code Heat: Ready** in the bottom status bar.
+4. Expand a source folder and hover over a file to see its count.
 
-Open Extensions and search `@installed Code Heat`. Confirm version **0.1.1** and enable it for this workspace.
-The bottom status bar shows **Code Heat: Open folder**, **Indexing**, **Ready**, or **Off**.
-Click that button to open the built-in guide. Run **Code Heat: Show Diagnostics** to inspect scan logs.
-See [Getting started](resources/getting-started.md) for complete setup and troubleshooting steps.
+No configuration file, Git clone, Node.js installation, or build step is needed for the extension.
+[Manual installation and PATH setup](docs/reference.md#other-installation-options).
 
-1. Open a project folder in VS Code.
-2. Wait for the folder index to finish. Large workspaces take longer.
-3. Hover over a file or folder to see its counts.
-4. Run **Code Heat: Open Configuration** to change thresholds.
+## Simple guide
 
-Defaults work without a configuration file.
-If colors do not appear, see [troubleshooting](#troubleshooting).
+| What you want | What to do |
+| --- | --- |
+| Find large files | Look for red file names in the Explorer. |
+| Find large folders | Look for red folders. Counts include their descendants. |
+| See exact counts | Hover over a file or folder. Capped file reads show “At least”. |
+| Open the built-in guide | Click **Code Heat** in the bottom status bar. |
+| Change thresholds | Run **Code Heat: Open Configuration** and save `.explorer-size.json`. |
+| Rebuild counts | Run **Code Heat: Refresh**. |
+| Check what is happening | Run **Code Heat: Show Diagnostics**. |
 
-| Item | Bright green | Dark red | Count |
-| --- | --- | --- | --- |
-| File | 80 lines or fewer | 1,000 lines or more | Physical lines |
-| Folder | Low line and file counts | 1,000 lines or 50 files | All included descendants |
+Open the Command Palette with **Ctrl+Shift+P** on Windows/Linux or **Cmd+Shift+P** on macOS.
+Type `Code Heat` to find the commands.
 
-Intermediate sizes use yellow and orange.
-Optional file badges show `S`, `M`, or `XL`.
+**Default scale:** files are green at **80 lines or fewer** and dark red at **1,000 lines or more**.
+Folders reach dark red at **1,000 descendant lines or 50 counted files**.
+Intermediate sizes use yellow and orange. Lines include code, comments, and blank lines.
 Unsaved edits update file colors. Saved changes update folder totals.
-Multi-root workspaces and filesystem workspaces in SSH, WSL, and dev containers are supported.
-For a remote workspace, install the VSIX in its remote extension host through the Extensions panel.
 
-## Examples
+### Example: make folder colors useful in a larger repo
 
-The Next.js example scan counted **5,374 files and 191,387 physical lines**.
-A separate synthetic scan covered **20,000 files**.
-These measurements describe the retained fixtures; performance varies with your repository and disk.
-
-**Local HTML report:** folder navigation, sorting, path filtering, and size bars.
-
-![Next.js folder size report](https://raw.githubusercontent.com/orYoffe/code-heat/main/screenshots/report-server.png)
-
-[Download the HTML report](https://github.com/orYoffe/code-heat/raw/main/examples/nextjs-size-report.html) and open it locally.
-Also available: [JSON](examples/nextjs-sizes.json) and [CSV](examples/nextjs-sizes.csv).
-
-<details>
-<summary>Explorer color illustration</summary>
-
-This illustration uses real file counts. It is **not a live VS Code screenshot**.
-Native decorations color labels and badges. The illustration also displays counts inline for explanation.
-
-![Explorer color illustration](https://raw.githubusercontent.com/orYoffe/code-heat/main/screenshots/explorer-color-preview.png)
-
-</details>
-
-## Configure
-
-Run **Code Heat: Open Configuration** from the Command Palette.
-This creates `.explorer-size.json` in the selected workspace root.
-No configuration file is required for the defaults.
+Run **Code Heat: Open Configuration**, then increase the folder thresholds:
 
 ```json
 {
   "minLines": 80,
   "maxLines": 1000,
-  "colorFolders": true,
-  "maxFolderLines": 1000,
-  "maxFolderFiles": 50,
-  "showBadge": true,
-  "include": ["**/*.{ts,tsx,js,jsx}"],
-  "concurrency": 4,
-  "maxEntries": 100000
+  "maxFolderLines": 10000,
+  "maxFolderFiles": 200
 }
 ```
 
-See `.explorer-size.example.json` for all defaults.
-Changes to the root file apply automatically.
-Malformed edits retain the last valid root configuration and show a warning.
-The same options work under `explorerSizeHeatmap.config` in `.vscode/settings.json`.
-The root configuration file overrides those settings.
+This keeps the file scale and gives larger folders more room before they become red.
+[All configuration options](docs/reference.md#configure).
 
-`include` and `exclude` use workspace-relative glob patterns. Arrays replace defaults.
-The CLI's repeated `--exclude` flags add to existing exclusions.
-Dependencies, build outputs, coverage, minified assets, source maps, and common lock files are excluded by default.
-Directory exclusions prune the entire subtree.
+## Export your own report
 
-The palette has 21 native theme colors. Customize any entry in VS Code's JSON settings:
-
-```json
-{
-  "workbench.colorCustomizations": {
-    "explorerSizeHeatmap.level0": "#39FF14",
-    "explorerSizeHeatmap.level20": "#B91C1C"
-  }
-}
-```
-
-The extension does not rewrite your theme or other settings.
-VS Code's supported API colors labels and badges, not individual row backgrounds.
-Keep `explorer.decorations.colors` enabled for the colors to appear.
-Git and other decoration providers may take priority on changed files.
-The extension cannot force decoration priority through the public API.
-
-## CLI and local reports
-
-The CLI works without VS Code. It requires Node.js 20 or newer and a separate installation.
-Install it from this repository:
+The CLI requires a separate installation and **Node.js 20 or newer**:
 
 ```sh
 git clone https://github.com/orYoffe/code-heat.git
@@ -150,114 +100,31 @@ npm ci --omit=dev
 npm link
 ```
 
-Scan any folder and export a report:
+From the folder you want to measure, choose an output:
 
 ```sh
-code-size . --format json --out sizes.json
-code-size . --format csv --out sizes.csv
 code-size . --format html --out sizes.html --open
-code-size packages --include '**/*.{ts,tsx,js,jsx}' --format tsv
+code-size . --format csv --out sizes.csv
+code-size . --format json --out sizes.json
 ```
 
-You can also run `node src/cli.js <folder>` directly.
-Run `code-size --help` for all flags.
+The HTML report opens locally. Click folders, sort by lines, filter paths, and inspect file details.
+No server is required. TSV, NDJSON, and Markdown exports are also available.
+[CLI reference](docs/reference.md#cli-and-local-reports).
 
-The HTML report opens from a local file without a server or internet access.
-It includes folder breadcrumbs, path filtering, sortable tables, size bars, pagination, file details, and JSON download.
-The tables follow the folder-navigation approach of Istanbul coverage reports.
-The size percentages show position on the configured size scale; they are not test coverage.
+## Nothing appears in VS Code?
 
-JSON includes report metadata, thresholds, scan duration, exclusion count, truncation state, and flat file/folder records.
-Each record includes its path, type, physical lines, blank lines, nonblank lines, text-file count, bytes, and skipped count.
-File records also include extension, language, modification timestamp, and count status.
-CSV, TSV, and NDJSON contain the same entry details. Markdown provides a compact table.
-Spreadsheet exports neutralize names that resemble formulas.
+1. Open Extensions and search `@installed Code Heat`. Confirm version **0.1.1** is enabled for this workspace.
+2. Open a project folder and run **Developer: Reload Window**.
+3. Enable **Explorer: Decorations Colors** in Settings.
+4. Run **Code Heat: Show Diagnostics** to inspect the **Code Heat** Output channel.
 
-## Counting and monorepo behavior
+Git colors can take priority on changed files. Check an unchanged source file.
+If commands are missing, check **Developer: Show Running Extensions** and **Output → Log (Extension Host)**.
+For SSH, WSL, or containers, install the extension in the remote host.
 
-The metric is **physical lines**, including code, comments, and blank lines.
-An empty file has zero lines. A terminal newline adds no extra line.
-CRLF counts as one separator. LF and CR are supported.
-Nonblank lines include comments; this tool does not claim language-aware executable-line counts.
+[Full troubleshooting](docs/reference.md#troubleshooting) · [Built-in guide](resources/getting-started.md) · [Known issues](REVIEW.md)
 
-Visible files use lazy, cached reads. Reads stop after crossing the red threshold.
-Their tooltip says “At least” when the count is capped.
-Folder indexing runs asynchronously with a shared bounded I/O queue.
-The index counts complete text files so recursive totals and CLI reports are exact for included files.
-The index stores metadata, not source content.
-Normal file changes update ancestors incrementally. Directory changes trigger a structural rescan.
-Cancellation, refresh, and workspace removal retire old reads.
+## More
 
-Default budgets:
-
-| Budget | Default |
-| --- | ---: |
-| Concurrent file reads per root | 4 |
-| Lazy result cache | 5,000 entries |
-| Metadata index | 100,000 entries |
-| Maximum file size | 8 MiB |
-| Read buffer | 32 KiB |
-| Pending lazy/update reads | 512 |
-
-Binary files containing NUL, UTF-16 files, oversized files, and symlinks are not counted.
-Unreadable files and directories contribute to skipped counts.
-Reaching the metadata budget produces a clearly marked partial index/report.
-The CLI exits with code 2 for partial reports, 1 for errors, and 130 for interruption.
-No telemetry, uploads, or executable workspace configuration are used.
-
-## Verification
-
-```sh
-npm test
-HEATMAP_MONOREPO=/path/to/next.js npm run test:integration
-```
-
-The host suite checks native decoration objects, recursive folder colors, multi-root isolation, caching, dirty edits, saved aggregates, configuration changes, and deletion.
-It uses a temporary fixture and a read-only Next.js checkout.
-On Linux, use a desktop session or `xvfb-run` for the host suite.
-Set `VSCODE_EXECUTABLE` to reuse an existing VS Code executable.
-
-See [the validation record](examples/validation.json) for repository scans, scale measurements, and verification limits.
-Native host verification remains incomplete. See [the review](REVIEW.md) for known issues and proposed improvements.
-
-## Troubleshooting
-
-| Problem | Action |
-| --- | --- |
-| `code` command was not found | Add the VS Code command to PATH, then open a new terminal. |
-| Download or checksum error | Retry the installer. It stops before installation when verification fails. |
-| No status button or commands | Confirm version 0.1.1 in Extensions. Check **Developer: Show Running Extensions** and **Log (Extension Host)**. |
-| Installed, but no colors | Run **Developer: Reload Window**. Enable `explorer.decorations.colors`. |
-| Changed files use Git colors | Other decoration providers can take priority. Check an unchanged file. |
-| Counts look stale after many changes | Run **Code Heat: Refresh**. See the queue-pressure finding in [REVIEW.md](REVIEW.md). |
-| Some files are missing | Check include/exclude patterns, file-size limits, skipped counts, and the entry budget. |
-| Extension is missing in SSH, WSL, or a container | Install the VSIX in that remote extension host. |
-
-## Develop or build from source
-
-Node.js 20 or newer is required for development.
-
-```sh
-git clone https://github.com/orYoffe/code-heat.git
-cd code-heat
-npm ci
-npm test
-npm run package
-code --install-extension explorer-size-heatmap-0.1.1.vsix
-```
-
-Press F5 from this repository to launch an Extension Development Host.
-The installers use the committed release package; building from source does not update that package automatically.
-When replacing a release, update both installers' version, pinned download URL, and checksum together.
-
-## Uninstall
-
-```sh
-code --uninstall-extension oryoffe.explorer-size-heatmap
-```
-
-Or uninstall **Code Heat** from the Extensions panel.
-
-## License
-
-[MIT](LICENSE).
+[Counting and monorepo behavior](docs/reference.md#counting-and-monorepo-behavior) · [Development](docs/reference.md#develop-or-build-from-source) · [Verification](docs/reference.md#verification) · [Uninstall](docs/reference.md#uninstall) · [MIT license](LICENSE)
