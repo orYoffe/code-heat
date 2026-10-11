@@ -1,27 +1,88 @@
-# Explorer Size Heatmap
+# Code Heat
 
-A VS Code extension and an offline CLI for file and folder sizes.
+See the size of your code in the VS Code Explorer.
+Files and folders change from bright green to dark red as their line counts grow.
+Use the CLI to export counts or browse a local HTML report.
 
-- Native Explorer file-name colors: bright green at **80 lines or fewer**, through yellow and orange, to dark red at **1,000 lines or more**.
-- Folder colors use recursive line totals and text-file counts. The stronger signal determines the color.
-- Defaults make folders dark red at **1,000 total lines or 50 counted files**. Change either threshold.
-- Hover for counts. Optional badges: `S` for small files, `M` for intermediate files, and `XL` above the maximum.
-- Unsaved edits update file colors. Saved changes update folder totals.
-- Per-root JSON configuration, multi-root workspaces, and SSH/WSL/dev-container extension hosts.
-- CLI exports JSON, CSV, TSV, NDJSON, Markdown, and a self-contained HTML report.
+## Install in one command
 
-## Install
+Install **VS Code 1.90 or newer** first. Its `code` command must be available in your terminal.
+The extension installer needs no Git clone, Node.js installation, or build step.
 
-Install the supplied `.vsix` with **Extensions → … → Install from VSIX**.
-Or build it:
+**macOS / Linux** — paste this command into a terminal:
 
 ```sh
-npm ci
-npm test
-npm run package
+curl -fsSL https://raw.githubusercontent.com/orYoffe/code-heat/main/scripts/install.sh | sh
 ```
 
-Press F5 from this repository to launch an Extension Development Host.
+**Windows** — paste this command into PowerShell:
+
+```powershell
+irm https://raw.githubusercontent.com/orYoffe/code-heat/main/scripts/install.ps1 | iex
+```
+
+The installer downloads version **0.1.0**, checks its SHA-256 checksum, and installs the VSIX through VS Code.
+It removes its temporary download on success or failure.
+Inspect the [shell installer](scripts/install.sh) or [PowerShell installer](scripts/install.ps1) before running it.
+
+On macOS, enable `code` through the Command Palette: **Shell Command: Install 'code' command in PATH**.
+Open a new terminal after changing PATH.
+See [VS Code's command-line guide](https://code.visualstudio.com/docs/configure/command-line) for platform setup.
+
+Prefer a manual install? [Download the VSIX](https://github.com/orYoffe/code-heat/raw/ce40e7d78ce636a73fda88c51abbc1cb7a241598/releases/explorer-size-heatmap-0.1.0.vsix).
+Then choose **Extensions → … → Install from VSIX**.
+For an already downloaded package, run:
+
+```sh
+code --install-extension explorer-size-heatmap-0.1.0.vsix
+```
+
+No Marketplace release exists yet. The extension appears in VS Code as **Explorer Size Heatmap**.
+The current CLI command is `code-size`; the configuration filename is `.explorer-size.json`.
+
+## Use it
+
+1. Open a project folder in VS Code.
+2. Wait for the folder index to finish. Large workspaces take longer.
+3. Hover over a file or folder to see its counts.
+4. Run **Explorer Size Heatmap: Open Configuration** to change thresholds.
+
+Defaults work without a configuration file.
+If colors do not appear, see [troubleshooting](#troubleshooting).
+
+| Item | Bright green | Dark red | Count |
+| --- | --- | --- | --- |
+| File | 80 lines or fewer | 1,000 lines or more | Physical lines |
+| Folder | Low line and file counts | 1,000 lines or 50 files | All included descendants |
+
+Intermediate sizes use yellow and orange.
+Optional file badges show `S`, `M`, or `XL`.
+Unsaved edits update file colors. Saved changes update folder totals.
+Multi-root workspaces and filesystem workspaces in SSH, WSL, and dev containers are supported.
+For a remote workspace, install the VSIX in its remote extension host through the Extensions panel.
+
+## Examples
+
+The Next.js example scan counted **5,374 files and 191,387 physical lines**.
+A separate synthetic scan covered **20,000 files**.
+These measurements describe the retained fixtures; performance varies with your repository and disk.
+
+**Local HTML report:** folder navigation, sorting, path filtering, and size bars.
+
+![Next.js folder size report](https://raw.githubusercontent.com/orYoffe/code-heat/main/screenshots/report-server.png)
+
+[Download the HTML report](https://github.com/orYoffe/code-heat/raw/main/examples/nextjs-size-report.html) and open it locally.
+Also available: [JSON](examples/nextjs-sizes.json) and [CSV](examples/nextjs-sizes.csv).
+
+<details>
+<summary>Explorer color illustration</summary>
+
+This illustration uses real file counts. It is **not a live VS Code screenshot**.
+Native decorations color labels and badges. The illustration also displays counts inline for explanation.
+
+![Explorer color illustration](https://raw.githubusercontent.com/orYoffe/code-heat/main/screenshots/explorer-color-preview.png)
+
+</details>
 
 ## Configure
 
@@ -71,13 +132,21 @@ Keep `explorer.decorations.colors` enabled for the colors to appear.
 Git and other decoration providers may take priority on changed files.
 The extension cannot force decoration priority through the public API.
 
-## CLI
+## CLI and local reports
 
-The CLI works without VS Code. Node.js 20 or newer is required.
+The CLI works without VS Code. It requires Node.js 20 or newer and a separate installation.
+Install it from this repository:
 
 ```sh
+git clone https://github.com/orYoffe/code-heat.git
+cd code-heat
 npm ci --omit=dev
 npm link
+```
+
+Scan any folder and export a report:
+
+```sh
 code-size . --format json --out sizes.json
 code-size . --format csv --out sizes.csv
 code-size . --format html --out sizes.html --open
@@ -142,14 +211,46 @@ It uses a temporary fixture and a read-only Next.js checkout.
 On Linux, use a desktop session or `xvfb-run` for the host suite.
 Set `VSCODE_EXECUTABLE` to reuse an existing VS Code executable.
 
-See `examples/` in the delivered archive for exports and the validation record.
+See [the validation record](examples/validation.json) for repository scans, scale measurements, and verification limits.
+Native host verification remains incomplete. See [the review](REVIEW.md) for known issues and proposed improvements.
 
-## Create the GitHub repository
+## Troubleshooting
 
-This is an independent Git repository. To publish it under your account:
+| Problem | Action |
+| --- | --- |
+| `code` command was not found | Add the VS Code command to PATH, then open a new terminal. |
+| Download or checksum error | Retry the installer. It stops before installation when verification fails. |
+| Installed, but no colors | Run **Developer: Reload Window**. Enable `explorer.decorations.colors`. |
+| Changed files use Git colors | Other decoration providers can take priority. Check an unchanged file. |
+| Counts look stale after many changes | Run **Explorer Size Heatmap: Refresh**. See the queue-pressure finding in [REVIEW.md](REVIEW.md). |
+| Some files are missing | Check include/exclude patterns, file-size limits, skipped counts, and the entry budget. |
+| Extension is missing in SSH, WSL, or a container | Install the VSIX in that remote extension host. |
+
+## Develop or build from source
+
+Node.js 20 or newer is required for development.
 
 ```sh
-gh repo create orYoffe/explorer-size-heatmap --private --source=. --remote=origin --push
+git clone https://github.com/orYoffe/code-heat.git
+cd code-heat
+npm ci
+npm test
+npm run package
+code --install-extension explorer-size-heatmap-0.1.0.vsix
 ```
 
-Marketplace publication is separate. No Marketplace release has been made.
+Press F5 from this repository to launch an Extension Development Host.
+The installers use the committed release package; building from source does not update that package automatically.
+When replacing a release, update both installers' version, pinned download URL, and checksum together.
+
+## Uninstall
+
+```sh
+code --uninstall-extension oryoffe.explorer-size-heatmap
+```
+
+Or uninstall **Explorer Size Heatmap** from the Extensions panel.
+
+## License
+
+[MIT](LICENSE).
