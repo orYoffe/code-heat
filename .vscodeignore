@@ -6,3 +6,7 @@ reports/**
 *.vsix
 node_modules/@vscode/**
 node_modules/playwright*/**
+examples/**
+screenshots/**
+releases/**
+REVIEW.md

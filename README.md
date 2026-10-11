@@ -21,7 +21,7 @@ curl -fsSL https://raw.githubusercontent.com/orYoffe/code-heat/main/scripts/inst
 irm https://raw.githubusercontent.com/orYoffe/code-heat/main/scripts/install.ps1 | iex
 ```
 
-The installer downloads version **0.1.0**, checks its SHA-256 checksum, and installs the VSIX through VS Code.
+The installer downloads version **0.1.1**, checks its SHA-256 checksum, and installs the VSIX through VS Code.
 It removes its temporary download on success or failure.
 Inspect the [shell installer](scripts/install.sh) or [PowerShell installer](scripts/install.ps1) before running it.
 
@@ -29,23 +29,29 @@ On macOS, enable `code` through the Command Palette: **Shell Command: Install 'c
 Open a new terminal after changing PATH.
 See [VS Code's command-line guide](https://code.visualstudio.com/docs/configure/command-line) for platform setup.
 
-Prefer a manual install? [Download the VSIX](https://github.com/orYoffe/code-heat/raw/ce40e7d78ce636a73fda88c51abbc1cb7a241598/releases/explorer-size-heatmap-0.1.0.vsix).
+Prefer a manual install? [Download the VSIX](https://github.com/orYoffe/code-heat/raw/main/releases/explorer-size-heatmap-0.1.1.vsix).
 Then choose **Extensions → … → Install from VSIX**.
 For an already downloaded package, run:
 
 ```sh
-code --install-extension explorer-size-heatmap-0.1.0.vsix
+code --install-extension explorer-size-heatmap-0.1.1.vsix
 ```
 
-No Marketplace release exists yet. The extension appears in VS Code as **Explorer Size Heatmap**.
+No Marketplace release exists yet. Find **Code Heat** in the Extensions panel.
+Version 0.1.0 was named **Explorer Size Heatmap**. The extension ID stays `oryoffe.explorer-size-heatmap`.
 The current CLI command is `code-size`; the configuration filename is `.explorer-size.json`.
 
-## Use it
+## Confirm installation and use it
+
+Open Extensions and search `@installed Code Heat`. Confirm version **0.1.1** and enable it for this workspace.
+The bottom status bar shows **Code Heat: Open folder**, **Indexing**, **Ready**, or **Off**.
+Click that button to open the built-in guide. Run **Code Heat: Show Diagnostics** to inspect scan logs.
+See [Getting started](resources/getting-started.md) for complete setup and troubleshooting steps.
 
 1. Open a project folder in VS Code.
 2. Wait for the folder index to finish. Large workspaces take longer.
 3. Hover over a file or folder to see its counts.
-4. Run **Explorer Size Heatmap: Open Configuration** to change thresholds.
+4. Run **Code Heat: Open Configuration** to change thresholds.
 
 Defaults work without a configuration file.
 If colors do not appear, see [troubleshooting](#troubleshooting).
@@ -86,7 +92,7 @@ Native decorations color labels and badges. The illustration also displays count
 
 ## Configure
 
-Run **Explorer Size Heatmap: Open Configuration** from the Command Palette.
+Run **Code Heat: Open Configuration** from the Command Palette.
 This creates `.explorer-size.json` in the selected workspace root.
 No configuration file is required for the defaults.
 
@@ -220,9 +226,10 @@ Native host verification remains incomplete. See [the review](REVIEW.md) for kno
 | --- | --- |
 | `code` command was not found | Add the VS Code command to PATH, then open a new terminal. |
 | Download or checksum error | Retry the installer. It stops before installation when verification fails. |
+| No status button or commands | Confirm version 0.1.1 in Extensions. Check **Developer: Show Running Extensions** and **Log (Extension Host)**. |
 | Installed, but no colors | Run **Developer: Reload Window**. Enable `explorer.decorations.colors`. |
 | Changed files use Git colors | Other decoration providers can take priority. Check an unchanged file. |
-| Counts look stale after many changes | Run **Explorer Size Heatmap: Refresh**. See the queue-pressure finding in [REVIEW.md](REVIEW.md). |
+| Counts look stale after many changes | Run **Code Heat: Refresh**. See the queue-pressure finding in [REVIEW.md](REVIEW.md). |
 | Some files are missing | Check include/exclude patterns, file-size limits, skipped counts, and the entry budget. |
 | Extension is missing in SSH, WSL, or a container | Install the VSIX in that remote extension host. |
 
@@ -236,7 +243,7 @@ cd code-heat
 npm ci
 npm test
 npm run package
-code --install-extension explorer-size-heatmap-0.1.0.vsix
+code --install-extension explorer-size-heatmap-0.1.1.vsix
 ```
 
 Press F5 from this repository to launch an Extension Development Host.
@@ -249,7 +256,7 @@ When replacing a release, update both installers' version, pinned download URL, 
 code --uninstall-extension oryoffe.explorer-size-heatmap
 ```
 
-Or uninstall **Explorer Size Heatmap** from the Extensions panel.
+Or uninstall **Code Heat** from the Extensions panel.
 
 ## License
 

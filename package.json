@@ -1,8 +1,8 @@
 {
   "name": "explorer-size-heatmap",
-  "displayName": "Explorer Size Heatmap",
+  "displayName": "Code Heat",
   "description": "Color files and folders by lines of code. Export a monorepo size report with the CLI.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "oryoffe",
   "license": "MIT",
   "engines": {
@@ -47,11 +47,19 @@
     "commands": [
       {
         "command": "explorerSizeHeatmap.refresh",
-        "title": "Explorer Size Heatmap: Refresh"
+        "title": "Code Heat: Refresh"
       },
       {
         "command": "explorerSizeHeatmap.openConfig",
-        "title": "Explorer Size Heatmap: Open Configuration"
+        "title": "Code Heat: Open Configuration"
+      },
+      {
+        "command": "explorerSizeHeatmap.gettingStarted",
+        "title": "Code Heat: Getting Started"
+      },
+      {
+        "command": "explorerSizeHeatmap.showDiagnostics",
+        "title": "Code Heat: Show Diagnostics"
       }
     ],
     "colors": [
@@ -284,5 +292,13 @@
       }
     ]
   },
-  "icon": "resources/icon.png"
+  "icon": "resources/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/orYoffe/code-heat.git"
+  },
+  "homepage": "https://github.com/orYoffe/code-heat#readme",
+  "bugs": {
+    "url": "https://github.com/orYoffe/code-heat/issues"
+  }
 }

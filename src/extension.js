@@ -60,6 +60,7 @@ class HeatmapProvider {
   async indexRoot(root) {
     if (root.scanning || root.queue.closed) return;
     root.scanning = true;
+    this.emitter.fire(undefined);
     const revision = root.revision;
     const token = { get isCancellationRequested() { return root.queue.closed; } };
     try {
@@ -67,9 +68,11 @@ class HeatmapProvider {
       if (token.isCancellationRequested || this.disposed) return;
       root.index = result.nodes; root.truncated = result.truncated;
       this.output.appendLine(`${root.folder.name}: ${result.nodes.get('').files} files, ${result.nodes.get('').lines} lines in ${result.durationMs} ms${result.truncated ? ' (entry limit reached)' : ''}.`);
-      this.emitter.fire(undefined);
     } catch (error) { this.output.appendLine(`Index: ${error.message}`); }
-    finally { root.scanning = false; }
+    finally {
+      root.scanning = false;
+      if (!root.queue.closed && !this.disposed) this.emitter.fire(undefined);
+    }
     // Reconcile changes made while the initial snapshot was being built.
     if (revision !== root.revision && !root.queue.closed) {
       for (const uri of root.updating) void this.updateIndex(root, uri);
@@ -217,9 +220,45 @@ class HeatmapProvider {
 }
 
 async function activate(context) {
-  const output = vscode.window.createOutputChannel('Explorer Size Heatmap');
+  const output = vscode.window.createOutputChannel('Code Heat');
+  output.appendLine(`Code Heat ${context.extension.packageJSON.version} activated.`);
   const provider = new HeatmapProvider(output);
   context.subscriptions.push(output, provider, vscode.window.registerFileDecorationProvider(provider));
+  const status = vscode.window.createStatusBarItem('codeHeat.status', vscode.StatusBarAlignment.Left, -100);
+  status.name = 'Code Heat';
+  status.command = 'explorerSizeHeatmap.gettingStarted';
+  const updateStatus = () => {
+    const roots = [...provider.roots.values()];
+    const active = roots.filter(root => root.config.enabled);
+    const message = !(vscode.workspace.workspaceFolders?.length) ? 'Open folder'
+      : !roots.length ? 'Unsupported workspace'
+      : !active.length ? 'Off'
+      : active.some(root => root.scanning) ? 'Indexing' : 'Ready';
+    status.text = `${message === 'Indexing' ? '$(loading~spin)' : '$(flame)'} Code Heat: ${message}`;
+    status.tooltip = 'Click for setup, color thresholds, and troubleshooting. Run Code Heat: Show Diagnostics for scan details.';
+    status.show();
+  };
+  context.subscriptions.push(status, provider.onDidChangeFileDecorations(updateStatus),
+    vscode.commands.registerCommand('explorerSizeHeatmap.gettingStarted', async () => {
+      const guide = vscode.Uri.joinPath(context.extensionUri, 'resources', 'getting-started.md');
+      try { await vscode.commands.executeCommand('markdown.showPreview', guide); }
+      catch { await vscode.window.showTextDocument(guide); }
+    }),
+    vscode.commands.registerCommand('explorerSizeHeatmap.showDiagnostics', () => {
+      output.appendLine(`\nCode Heat ${context.extension.packageJSON.version} diagnostics`);
+      output.appendLine(`Explorer colors: ${vscode.workspace.getConfiguration('explorer').get('decorations.colors', true)}.`);
+      if (!(vscode.workspace.workspaceFolders?.length)) output.appendLine('No workspace folder. Use File > Open Folder.');
+      for (const folder of vscode.workspace.workspaceFolders || []) {
+        const root = provider.roots.get(folder.uri.toString());
+        if (!root) { output.appendLine(`${folder.name}: unsupported workspace or invalid settings. Filesystem workspaces are required.`); continue; }
+        const total = root.index?.get('');
+        output.appendLine(`${folder.name}: enabled=${root.config.enabled}, folders=${root.config.colorFolders}, scanning=${!!root.scanning}, partial=${!!root.truncated}.`);
+        output.appendLine(total ? `${total.files} files, ${total.lines} lines, ${total.skipped} skipped.` : 'No folder index yet. Folder indexing may be disabled or still running.');
+        output.appendLine(`Include: ${JSON.stringify(root.config.include)}. Exclude: ${JSON.stringify(root.config.exclude)}.`);
+      }
+      output.show(true);
+    }));
+  updateStatus();
   const watcher = vscode.workspace.createFileSystemWatcher('**/*');
   const changed = uri => {
     const folder = vscode.workspace.getWorkspaceFolder(uri);
