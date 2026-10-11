@@ -25,10 +25,10 @@ trap 'exit 129' HUP
 trap 'exit 130' INT
 trap 'exit 143' TERM
 vsix="$tmp_dir/code-heat.vsix"
-url='https://raw.githubusercontent.com/orYoffe/code-heat/ce40e7d78ce636a73fda88c51abbc1cb7a241598/releases/explorer-size-heatmap-0.1.0.vsix'
-expected='7e26504f7778f9feef00bcabf3c73a88ada01a56f3e16f6fe41c98c41da8f7e7'
+url='https://raw.githubusercontent.com/orYoffe/code-heat/d7434ac21d84f95f077c313218b21f93045c8f4d/releases/explorer-size-heatmap-0.1.1.vsix'
+expected='6218dfb3cd2a384218a0c17363e7bd2b8019503eb86c707cdac96c8c3e514ef9'
 
-printf '%s\n' 'Downloading Code Heat 0.1.0...'
+printf '%s\n' 'Downloading Code Heat 0.1.1...'
 curl -fSL --retry 2 "$url" -o "$vsix"
 if [ "$hash_tool" = sha256sum ]; then
   digest=$(sha256sum "$vsix")
@@ -40,5 +40,5 @@ if [ "$actual" != "$expected" ]; then
   printf '%s\n' 'Download checksum does not match. Installation stopped.' >&2
   exit 1
 fi
-code --install-extension "$vsix"
-printf '%s\n' 'Code Heat installed. Open a project folder in VS Code.' 'If needed, run Developer: Reload Window. Find the extension as Explorer Size Heatmap.'
+code --install-extension "$vsix" </dev/null
+printf '%s\n' 'Code Heat installed. Open a project folder in VS Code.' 'If needed, run Developer: Reload Window. Click Code Heat in the bottom status bar for help.'
