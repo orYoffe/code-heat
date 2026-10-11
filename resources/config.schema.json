@@ -1,0 +1,107 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Explorer Size Heatmap",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "minLines": {
+      "type": "integer",
+      "default": 80,
+      "minimum": 0,
+      "maximum": 1000000
+    },
+    "maxLines": {
+      "type": "integer",
+      "default": 1000,
+      "minimum": 1,
+      "maximum": 1000000
+    },
+    "showBadge": {
+      "type": "boolean",
+      "default": true
+    },
+    "colorFolders": {
+      "type": "boolean",
+      "default": true
+    },
+    "maxFolderLines": {
+      "type": "integer",
+      "default": 1000,
+      "minimum": 1,
+      "maximum": 1000000000
+    },
+    "maxFolderFiles": {
+      "type": "integer",
+      "default": 50,
+      "minimum": 1,
+      "maximum": 1000000
+    },
+    "maxEntries": {
+      "type": "integer",
+      "default": 100000,
+      "minimum": 100,
+      "maximum": 1000000
+    },
+    "concurrency": {
+      "type": "integer",
+      "default": 4,
+      "minimum": 1,
+      "maximum": 16
+    },
+    "cacheEntries": {
+      "type": "integer",
+      "default": 5000,
+      "minimum": 1,
+      "maximum": 100000
+    },
+    "maxFileBytes": {
+      "type": "integer",
+      "default": 8388608,
+      "minimum": 1024,
+      "maximum": 67108864
+    },
+    "include": {
+      "type": "array",
+      "default": [
+        "**/*"
+      ],
+      "items": {
+        "type": "string",
+        "maxLength": 512
+      },
+      "maxItems": 100
+    },
+    "exclude": {
+      "type": "array",
+      "default": [
+        "**/node_modules/**",
+        "**/.git/**",
+        "**/dist/**",
+        "**/build/**",
+        "**/.next/**",
+        "**/coverage/**",
+        "**/vendor/**",
+        "**/*.min.*",
+        "**/package-lock.json",
+        "**/yarn.lock",
+        "**/pnpm-lock.yaml",
+        "**/Cargo.lock",
+        "**/composer.lock",
+        "**/poetry.lock",
+        "**/*.map"
+      ],
+      "items": {
+        "type": "string",
+        "maxLength": 512
+      },
+      "maxItems": 100
+    },
+    "$schema": {
+      "type": "string"
+    }
+  }
+}

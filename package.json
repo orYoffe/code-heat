@@ -1,0 +1,288 @@
+{
+  "name": "explorer-size-heatmap",
+  "displayName": "Explorer Size Heatmap",
+  "description": "Color files and folders by lines of code. Export a monorepo size report with the CLI.",
+  "version": "0.1.0",
+  "publisher": "oryoffe",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.90.0",
+    "node": ">=20"
+  },
+  "categories": [
+    "Visualization",
+    "Other"
+  ],
+  "keywords": [
+    "lines",
+    "monorepo",
+    "explorer",
+    "size",
+    "heatmap"
+  ],
+  "main": "./src/extension.js",
+  "extensionKind": [
+    "workspace"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "bin": {
+    "code-size": "./src/cli.js"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "package": "vsce package --allow-missing-repository",
+    "test:integration": "node scripts/integration.js"
+  },
+  "dependencies": {
+    "picomatch": "4.0.3"
+  },
+  "devDependencies": {
+    "@vscode/vsce": "3.9.2",
+    "@vscode/test-electron": "2.5.2",
+    "playwright": "1.58.2"
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "explorerSizeHeatmap.refresh",
+        "title": "Explorer Size Heatmap: Refresh"
+      },
+      {
+        "command": "explorerSizeHeatmap.openConfig",
+        "title": "Explorer Size Heatmap: Open Configuration"
+      }
+    ],
+    "colors": [
+      {
+        "id": "explorerSizeHeatmap.level0",
+        "description": "File and folder size heat level 0 of 20.",
+        "defaults": {
+          "dark": "#39FF14",
+          "light": "#39FF14",
+          "highContrast": "#39FF14",
+          "highContrastLight": "#39FF14"
+        }
+      },
+      {
+        "id": "explorerSizeHeatmap.level1",
+        "description": "File and folder size heat level 1 of 20.",
+        "defaults": {
+          "dark": "#4FFB1E",
+          "light": "#4FFB1E",
+          "highContrast": "#4FFB1E",
+          "highContrastLight": "#4FFB1E"
+        }
+      },
+      {
+        "id": "explorerSizeHeatmap.level2",
+        "description": "File and folder size heat level 2 of 20.",
+        "defaults": {
+          "dark": "#65F627",
+          "light": "#65F627",
+          "highContrast": "#65F627",
+          "highContrastLight": "#65F627"
+        }
+      },
+      {
+        "id": "explorerSizeHeatmap.level3",
+        "description": "File and folder size heat level 3 of 20.",
+        "defaults": {
+          "dark": "#7BF231",
+          "light": "#7BF231",
+          "highContrast": "#7BF231",
+          "highContrastLight": "#7BF231"
+        }
+      },
+      {
+        "id": "explorerSizeHeatmap.level4",
+        "description": "File and folder size heat level 4 of 20.",
+        "defaults": {
+          "dark": "#92EE3A",
+          "light": "#92EE3A",
+          "highContrast": "#92EE3A",
+          "highContrastLight": "#92EE3A"
+        }
+      },
+      {
+        "id": "explorerSizeHeatmap.level5",
+        "description": "File and folder size heat level 5 of 20.",
+        "defaults": {
+          "dark": "#A8EA44",
+          "light": "#A8EA44",
+          "highContrast": "#A8EA44",
+          "highContrastLight": "#A8EA44"
+        }
+      },
+      {
+        "id": "explorerSizeHeatmap.level6",
+        "description": "File and folder size heat level 6 of 20.",
+        "defaults": {
+          "dark": "#BEE54D",
+          "light": "#BEE54D",
+          "highContrast": "#BEE54D",
+          "highContrastLight": "#BEE54D"
+        }
+      },
+      {
+        "id": "explorerSizeHeatmap.level7",
+        "description": "File and folder size heat level 7 of 20.",
+        "defaults": {
+          "dark": "#D4E157",
+          "light": "#D4E157",
+          "highContrast": "#D4E157",
+          "highContrastLight": "#D4E157"
+        }
+      },
+      {
+        "id": "explorerSizeHeatmap.level8",
+        "description": "File and folder size heat level 8 of 20.",
+        "defaults": {
+          "dark": "#DFDB4B",
+          "light": "#DFDB4B",
+          "highContrast": "#DFDB4B",
+          "highContrastLight": "#DFDB4B"
+        }
+      },
+      {
+        "id": "explorerSizeHeatmap.level9",
+        "description": "File and folder size heat level 9 of 20.",
+        "defaults": {
+          "dark": "#EAD640",
+          "light": "#EAD640",
+          "highContrast": "#EAD640",
+          "highContrastLight": "#EAD640"
+        }
+      },
+      {
+        "id": "explorerSizeHeatmap.level10",
+        "description": "File and folder size heat level 10 of 20.",
+        "defaults": {
+          "dark": "#F4D034",
+          "light": "#F4D034",
+          "highContrast": "#F4D034",
+          "highContrastLight": "#F4D034"
+        }
+      },
+      {
+        "id": "explorerSizeHeatmap.level11",
+        "description": "File and folder size heat level 11 of 20.",
+        "defaults": {
+          "dark": "#FFCA28",
+          "light": "#FFCA28",
+          "highContrast": "#FFCA28",
+          "highContrastLight": "#FFCA28"
+        }
+      },
+      {
+        "id": "explorerSizeHeatmap.level12",
+        "description": "File and folder size heat level 12 of 20.",
+        "defaults": {
+          "dark": "#FFB42F",
+          "light": "#FFB42F",
+          "highContrast": "#FFB42F",
+          "highContrastLight": "#FFB42F"
+        }
+      },
+      {
+        "id": "explorerSizeHeatmap.level13",
+        "description": "File and folder size heat level 13 of 20.",
+        "defaults": {
+          "dark": "#FF9D36",
+          "light": "#FF9D36",
+          "highContrast": "#FF9D36",
+          "highContrastLight": "#FF9D36"
+        }
+      },
+      {
+        "id": "explorerSizeHeatmap.level14",
+        "description": "File and folder size heat level 14 of 20.",
+        "defaults": {
+          "dark": "#FF873C",
+          "light": "#FF873C",
+          "highContrast": "#FF873C",
+          "highContrastLight": "#FF873C"
+        }
+      },
+      {
+        "id": "explorerSizeHeatmap.level15",
+        "description": "File and folder size heat level 15 of 20.",
+        "defaults": {
+          "dark": "#FF7043",
+          "light": "#FF7043",
+          "highContrast": "#FF7043",
+          "highContrastLight": "#FF7043"
+        }
+      },
+      {
+        "id": "explorerSizeHeatmap.level16",
+        "description": "File and folder size heat level 16 of 20.",
+        "defaults": {
+          "dark": "#F15F3B",
+          "light": "#F15F3B",
+          "highContrast": "#F15F3B",
+          "highContrastLight": "#F15F3B"
+        }
+      },
+      {
+        "id": "explorerSizeHeatmap.level17",
+        "description": "File and folder size heat level 17 of 20.",
+        "defaults": {
+          "dark": "#E34E33",
+          "light": "#E34E33",
+          "highContrast": "#E34E33",
+          "highContrastLight": "#E34E33"
+        }
+      },
+      {
+        "id": "explorerSizeHeatmap.level18",
+        "description": "File and folder size heat level 18 of 20.",
+        "defaults": {
+          "dark": "#D53E2C",
+          "light": "#D53E2C",
+          "highContrast": "#D53E2C",
+          "highContrastLight": "#D53E2C"
+        }
+      },
+      {
+        "id": "explorerSizeHeatmap.level19",
+        "description": "File and folder size heat level 19 of 20.",
+        "defaults": {
+          "dark": "#C72D24",
+          "light": "#C72D24",
+          "highContrast": "#C72D24",
+          "highContrastLight": "#C72D24"
+        }
+      },
+      {
+        "id": "explorerSizeHeatmap.level20",
+        "description": "File and folder size heat level 20 of 20.",
+        "defaults": {
+          "dark": "#B91C1C",
+          "light": "#B91C1C",
+          "highContrast": "#B91C1C",
+          "highContrastLight": "#B91C1C"
+        }
+      }
+    ],
+    "configuration": {
+      "title": "Explorer Size Heatmap",
+      "properties": {
+        "explorerSizeHeatmap.config": {
+          "type": "object",
+          "default": {},
+          "scope": "resource",
+          "description": "Size thresholds and scan options. A workspace-root .explorer-size.json overrides these values."
+        }
+      }
+    },
+    "jsonValidation": [
+      {
+        "fileMatch": ".explorer-size.json",
+        "url": "./resources/config.schema.json"
+      }
+    ]
+  },
+  "icon": "resources/icon.png"
+}

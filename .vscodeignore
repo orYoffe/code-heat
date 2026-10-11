@@ -1,0 +1,8 @@
+.git/**
+.vscode/**
+test/**
+scripts/**
+reports/**
+*.vsix
+node_modules/@vscode/**
+node_modules/playwright*/**

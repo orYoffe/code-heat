@@ -1,0 +1,10 @@
+{
+  "files": 20000,
+  "lines": 400000,
+  "entries": 20402,
+  "durationMs": 2272,
+  "rssDeltaMiB": 74,
+  "eventLoopP99Ms": 13,
+  "concurrency": 4,
+  "truncated": false
+}

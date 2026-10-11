@@ -1,0 +1,33 @@
+{
+  "enabled": true,
+  "minLines": 80,
+  "maxLines": 1000,
+  "showBadge": true,
+  "colorFolders": true,
+  "maxFolderLines": 1000,
+  "maxFolderFiles": 50,
+  "maxEntries": 100000,
+  "concurrency": 4,
+  "cacheEntries": 5000,
+  "maxFileBytes": 8388608,
+  "include": [
+    "**/*"
+  ],
+  "exclude": [
+    "**/node_modules/**",
+    "**/.git/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/.next/**",
+    "**/coverage/**",
+    "**/vendor/**",
+    "**/*.min.*",
+    "**/package-lock.json",
+    "**/yarn.lock",
+    "**/pnpm-lock.yaml",
+    "**/Cargo.lock",
+    "**/composer.lock",
+    "**/poetry.lock",
+    "**/*.map"
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "sourceCommit": "bce2fc10d69fe41e7603fdac02e16a5b49f486b3",
+  "unitAndProviderContractTests": {
+    "passed": 22,
+    "failed": 0,
+    "providerUsesStub": true
+  },
+  "realRepository": {
+    "repository": "orYoffe/next.js",
+    "commit": "8eccecb35e8ed1bbaa0f058edc561909b83ea9e9",
+    "countedFiles": 5374,
+    "physicalLines": 191387,
+    "skipped": 206,
+    "independentCountMatched": true,
+    "scanDurationMs": 1101
+  },
+  "scaleTest": {
+    "files": 20000,
+    "lines": 400000,
+    "entries": 20402,
+    "durationMs": 2272,
+    "rssDeltaMiB": 74,
+    "eventLoopP99Ms": 13,
+    "concurrency": 4,
+    "truncated": false
+  },
+  "htmlBrowserChecks": [
+    "folder breadcrumbs",
+    "folder contents",
+    "file metadata",
+    "path filter",
+    "largest-first ordering",
+    "pagination",
+    "mobile rendering",
+    "no script errors"
+  ],
+  "liveVSCodeHost": "Not completed. Automatic approval review rejected host testing due to telemetry to an untrusted Microsoft endpoint, despite telemetry-off flags.",
+  "githubRepository": "Local Git repository created and committed. GitHub repository was not created; connected tools have no repository-creation operation.",
+  "explorerPreview": "Illustration using actual file counts, not a live VS Code screenshot."
+}
